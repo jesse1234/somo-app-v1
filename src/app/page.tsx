@@ -179,7 +179,7 @@ export default function Home() {
       <Modal isOpen={showForgotPassword} onClose={handleCloseModal}>
         <div className="space-y-4">
           <h3 className="text-xl font-bold text-dark-gray">Reset Password</h3>
-          <p className="text-dark-gray">Enter your email address and we will send you a link to your password.</p>
+          <p className="text-dark-gray">Enter your email address and we will send you a link to reset your password.</p>
 
           <form onSubmit={handleForgotPassword}>
             <div className="space-y-2">

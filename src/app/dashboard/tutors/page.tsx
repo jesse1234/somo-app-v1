@@ -9,15 +9,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleUser } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "@/app/components/ui/Link";
 import { TutorsTableSkeleton } from "@/app/components/skeletons/TableSkeletons";
+import { useTutors } from "@/store/useGetTutors";
 
 export default function TutorsPage() {
-    const { data, isLoading, isError } = useQuery<TutorResponse>({
-        queryKey: ['tutors'],
-        queryFn: async () => {
-            const response = await apiClient.get('/api/Admin/getAllTutors');
-            return response.data;
-        }
-    });
+    const { data, isLoading, isError } = useTutors()
 
     if(isLoading) {
         return <TutorsTableSkeleton />

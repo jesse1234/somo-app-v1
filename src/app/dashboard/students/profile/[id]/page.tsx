@@ -12,17 +12,12 @@ import { useParams } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleUser } from '@fortawesome/free-solid-svg-icons';
 import { StudentProfileSkeleton } from '@/app/components/skeletons/ProfileSkeletons';
+import { useStudentProfile } from '@/store/useGetStudentProfile';
 
 export default function StudentProfilePage() {
   const { id } = useParams();
   
-  const { data: studentProfile, isLoading, error } = useQuery<StudentProfileResponse>({
-    queryKey: ['studentProfile', id],
-    queryFn: async () => {
-      const response = await apiClient.get(`/api/Admin/studentProfile/${id}`);
-      return response.data;
-    }
-  });
+  const { data: studentProfile, isLoading, error } = useStudentProfile(id as string);
 
   if (isLoading) return <StudentProfileSkeleton />;
   if (error) return <div>Error loading profile</div>;

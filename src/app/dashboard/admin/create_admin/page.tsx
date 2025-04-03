@@ -56,7 +56,7 @@ export default function CreateAdminPage() {
                                                 //required
                                             />
                                         </div>
-                                        <div className="space-y-2">
+                                        {/* <div className="space-y-2">
                                             <Label className="text-sm text-dark-gray mb-2">Date of Birth</Label>
                                             <Input
                                                 type="text"
@@ -66,7 +66,7 @@ export default function CreateAdminPage() {
                                                 //onChange={(e) => setFormData({...formData, dateOfBirth: e.target.value})}
                                                 //required
                                             />
-                                        </div>
+                                        </div> */}
                                         <div className="space-y-2">
                                             <Label className="text-sm text-dark-gray mb-2">Password</Label>
                                             <Input

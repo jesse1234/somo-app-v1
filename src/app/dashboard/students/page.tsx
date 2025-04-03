@@ -11,15 +11,10 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "@/app/components/ui/Link";
 import Image from "next/image";
 import { StudentsTableSkeleton } from "@/app/components/skeletons/TableSkeletons";
+import { useStudents } from "@/store/useGetStudents";
 
 export default function StudentsPage() {
-  const { data, isLoading, error } = useQuery<StudentResponse>({
-      queryKey: ['students'],
-      queryFn: async () => {
-          const response = await apiClient.get('/api/Admin/getAllStudents');
-          return response.data;
-      }
-  });
+  const { data, isLoading, error } = useStudents();
 
   const columns: ColumnDef<StudentData>[] = [
       {
@@ -94,7 +89,7 @@ export default function StudentsPage() {
     return <div className="p-6 text-red-500">Error loading student data</div>;
   }
 
-  if (!data?.data?.length) {
+  if (!data?.length) {
     return (
       <div className="flex flex-col">
         <Header userName="Admin" header="Students" showFilter={true}/>
@@ -109,7 +104,7 @@ export default function StudentsPage() {
       <div className="flex flex-col">
           <Header userName="Admin" header="Students" showFilter={true}/>
           <div className="p-6 bg-white rounded-lg shadow">
-              <DataTable columns={columns} data={data.data} />
+              <DataTable columns={columns} data={data} />
           </div>
       </div>
   );

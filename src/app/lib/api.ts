@@ -1,3 +1,4 @@
+import useAuthStore from '@/store/useAuthStore';
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse} from 'axios';
 
 const api = axios.create({
@@ -6,6 +7,13 @@ const api = axios.create({
         "Content-Type": "application/json"
     },
 });
+
+
+// export interface ApiResponse<T> {
+//     statusCode: number;
+//     statusMessage: string;
+//     data: T;
+// }
 
 interface ApiErrorResponse {
     message?: string;
