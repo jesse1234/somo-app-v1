@@ -9,14 +9,15 @@ import CustomStepper from '@/app/components/ui/CustomStepper';
 import { ColumnDef } from '@tanstack/react-table';
 import { Input } from '@/app/components/ui/Input';
 import { DataTable } from '@/app/components/ui/Table';
-import { DocumentIcon, EllipsisVerticalIcon } from '@heroicons/react/24/outline'
+import { DocumentIcon } from '@heroicons/react/24/outline'
 import { TutorProfileResponse } from "@/app/types/api" 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faCircleUser, faStar } from "@fortawesome/free-solid-svg-icons"
+import { faCircleUser, faEllipsisVertical, faStar } from "@fortawesome/free-solid-svg-icons"
 import { useParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import apiClient from '@/app/lib/apiClient';
 import { AboutStepSkeleton, DocumentsStepSkeleton, ReportStepSkeleton, StepperSkeleton, TutorEditProfileSkeleton, TutorEditSkeleton } from '@/app/components/skeletons/TutorEditProfileSkeleton';
+import { Dropdown } from '@/app/components/ui/Dropdown';
 
 type Document = {
     name: string;
@@ -38,11 +39,6 @@ type TableInstance = {
 
 export default function TutorEditPage() {
     const [activeStep, setActiveStep] = useState(0);
-    // const [isMounted, setIsMounted] = useState(false);
-
-    // useEffect(() => {
-    //     setIsMounted(true);
-    // }, [])
 
     const { id } = useParams();
     const {data: tutorProfile, isLoading: profileLoading } = useQuery<TutorProfileResponse>({
@@ -66,6 +62,39 @@ export default function TutorEditPage() {
     const handleStepClick = (step: number) => {
         setActiveStep(step);
     };
+
+    // const handleApprove = async (document: Document) => {
+    //     try{
+    //         await apiClient.post('/api/Admin/approve-document', { // temp api
+    //             documentId: document.name,
+    //             status: 'approved'
+    //         });
+    //     } catch (error) {
+    //         console.error('Approval failed:', error);
+    //     }
+    // };
+
+    // const handleDeny = async (document: Document) => {
+    //     try{
+    //         await apiClient.post('/api/Admin/deny-document', { // temp api
+    //             documentId: document.name,
+    //             status: 'deny'
+    //         });
+    //     } catch (error) {
+    //         console.error('Deny failed:', error);
+    //     }
+    // };
+
+    // const handlePending = async (document: Document) => {
+    //     try{
+    //         await apiClient.post('/api/Admin/pending-document', { // temp api
+    //             documentId: document.name,
+    //             status: 'pending'
+    //         });
+    //     } catch (error) {
+    //         console.error('Pending failed:', error);
+    //     }
+    // }; 
 
     const steps = [
         { label: 'About' },
@@ -168,11 +197,30 @@ export default function TutorEditPage() {
                             Download
                         </a>
                     ) : (
-                        <span className="text-gray-400">Not available</span>
+                        <span className="text-gray-400">Unavailable</span>
                     )}
-                    <button className="p-2 hover:bg-gray-100 rounded-full">
-                        <EllipsisVerticalIcon className="w-5 h-5 text-dark-gray"/>
-                    </button>
+                        
+                            <Dropdown
+                                trigger={<FontAwesomeIcon icon={faEllipsisVertical} />}
+                                items={[
+                                    {
+                                        label: 'Pending',
+                                        onClick: () => console.log('Pending clicked')
+                                    },
+                                    {
+                                        label: 'Approve',
+                                        onClick: () => console.log('Approve clicked')
+                                    },
+                                    {
+                                        label: 'Not Approved',
+                                        onClick: () => console.log('Not approved clicked')
+                                    },
+                                ]}
+                            />
+                            {/* <Button variant="outline" className="p-2 hover:bg-gray-100 rounded-full">
+                                <EllipsisVerticalIcon className="w-5 h-5 text-dark-gray" />
+                            </Button>
+                        </Dropdown> */}
                 </div>
             ),
         },
@@ -285,6 +333,25 @@ export default function TutorEditPage() {
                             <div className="flex justify-between items-center mb-4">
                                 <h2 className="text-xl text-dark-gray font-semibold">Documents</h2>
                                 {/* <Button variant="default">Bulk Action</Button> */}
+                                <div className="flex justify-end">
+                                    <Dropdown
+                                        trigger={<FontAwesomeIcon icon={faEllipsisVertical} />}
+                                        items={[
+                                            {
+                                                label: 'Approve Tutor',
+                                                onClick: () => console.log('Approve tutor clicked')
+                                            },
+                                            {
+                                                label: 'Suspend Tutor',
+                                                onClick: () => console.log('Suspend tutor clicked')
+                                            },
+                                            {
+                                                label: 'Reject Tutor',
+                                                onClick: () => console.log('Reject tutor clicked')
+                                            },
+                                        ]}
+                                    />
+                                </div>
                             </div>
                             <p className="text-sm text-light-gray mb-6">Documents submitted will be deleted after 30 days.</p>
                             <DataTable columns={columns} data={documents} />
@@ -325,7 +392,7 @@ export default function TutorEditPage() {
                                                     
                                                     {/* Content on the right */}
                                                     <div className="flex-1">
-                                                        <div className="flex items-center gap-2 mb-2">
+                                                        <div className="flex items-center justify-between mb-2">
                                                             <span className={`px-2 py-1 rounded-full text-xs ${
                                                                 session.totalRatings > 0 
                                                                     ? 'bg-green-100 text-green-800' 
@@ -333,6 +400,23 @@ export default function TutorEditPage() {
                                                             }`}>
                                                                 {session.totalRatings > 0 ? 'Approved' : 'Pending'}
                                                             </span>
+                                                                <Dropdown
+                                                                    trigger={<FontAwesomeIcon icon={faEllipsisVertical} />}
+                                                                    items={[
+                                                                        {
+                                                                            label: 'Approve Lesson',
+                                                                            onClick: () => console.log('Approve lesson')
+                                                                        },
+                                                                        {
+                                                                            label: 'Pending Lesson',
+                                                                            onClick: () => console.log('Set Pending Lesson')
+                                                                        },
+                                                                        {
+                                                                            label: 'Reject Lesson',
+                                                                            onClick: () => console.log('Reject lesson clicked')
+                                                                        },
+                                                                    ]}
+                                                                />
                                                         </div>
                                                         
                                                         <h3 className="text-lg font-semibold mb-3 line-clamp-2">{session.title}</h3> {/* Added line clamp */}

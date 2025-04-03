@@ -6,32 +6,20 @@ import LogoImage from '@/app/assets/images/Group 394.png';
 import { Button } from './components/ui/Buttons';
 import { Input } from './components/ui/Input';
 import { Label } from './components/ui/Label';
-import { Link } from './components/ui/Link';
 import Image from 'next/image';
-import { useMutation } from '@tanstack/react-query';
-import apiClient from './lib/apiClient';
 import useAuthStore from '@/store/useAuthStore';
 import { useRouter } from 'next/navigation';
-import { User } from '@/store/useAuthStore';
+import { Modal } from '@/app/components/ui/Modal';
+import { useForgotPassword } from '@/store/useForgotPassword';
 
 export default function Home() {
   const router = useRouter();
-  const { login } = useAuthStore();
+  const { loginUser } = useAuthStore();
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const { mutate, error } = useMutation({
-    mutationFn: (credentials: { email: string; password: string }) =>
-      apiClient.post('/api/Auth/login', credentials).then((response) => response.data),
-    onSuccess: (data: { data: { accessToken: string; refreshToken: string; user: User }}) => {
-      const { accessToken, refreshToken, user } = data.data;
-      login(accessToken, refreshToken, user);
-      router.push('/dashboard');
-    },
-    onError: (error: Error) => {
-      console.error('Login failed', error);
-    },
-  });
+  const { resetPassword, status: resetStatus, error: resetError, isLoading: isResetting, resetState} = useForgotPassword()
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [emailForReset, setEmailForReset] = useState('')
 
   const validateEmail = (email: string) => {
     if (!email) return 'Email is required';
@@ -54,7 +42,7 @@ export default function Home() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
     
@@ -77,10 +65,28 @@ export default function Home() {
       return;
     }
 
-    mutate(credentials, {
-      onSettled: () => setIsSubmitting(false)
-    });
+    try {
+      await loginUser(credentials.email, credentials.password);
+      router.push("/dashboard")
+    }catch (error) {
+      console.error('Login error:', error);
+    }
   };
+
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await resetPassword(emailForReset);
+    } catch (error) {
+      console.error("Passwrord reset failed:", error);
+    }
+  };
+
+  const handleCloseModal = () => {
+    setShowForgotPassword(false);
+    resetState();
+    setEmailForReset('');
+  }
 
   return (
     <div className="flex min-h-screen bg-white">
@@ -135,27 +141,73 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="flex items-center justify-end">
+              {/* <div className="flex items-center justify-end">
                 <div className="text-sm mt-4 mb-4">
                   <Link href="#">Forgot Password?</Link>
+                </div>
+              </div> */}
+
+              <div className="flex items-center justify-end">
+                <div className="text-sm mt-4 mb-4">
+                  <button
+                    type="button" 
+                    onClick={() => setShowForgotPassword(true)}
+                    className="text-primary hover:underline"
+                  >
+                    Forgot Password?
+                  </button>
                 </div>
               </div>
 
               <div>
                 <Button 
                   type="submit" 
-                  className="text-white w-full bg-primary hover:bg-secondary"
+                  className="text-white w-full bg-primary hover:bg-blue-900/90"
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? 'Signing In...' : 'Sign In'}
                 </Button>
               </div>
-              {error && <p className="text-red-500 text-sm mt-2">{error.message}</p>}
+              {/* {error && <p className="text-red-500 text-sm mt-2">{error.message}</p>} */}
             </form>
           </div>
         </div>
       </div>
       <AuthImage />
+
+      {/* Forgot password modal */}
+      <Modal isOpen={showForgotPassword} onClose={handleCloseModal}>
+        <div className="space-y-4">
+          <h3 className="text-xl font-bold text-dark-gray">Reset Password</h3>
+          <p className="text-dark-gray">Enter your email address and we will send you a link to your password.</p>
+
+          <form onSubmit={handleForgotPassword}>
+            <div className="space-y-2">
+                <Label htmlFor="reset-email">Email</Label>
+                <Input
+                id='reset-email'
+                type='email'
+                value={emailForReset}
+                onChange={(e) => setEmailForReset(e.target.value)}
+                required
+                placeholder="your@email.com"
+              />
+            </div>
+
+            {resetStatus === 'success' && (
+              <p className='text-green-600 text-sm mt-2'>Password reset link sent! Check your email</p>
+            )}
+            {resetStatus === 'error' && (
+              <p className='text-red-500 text-sm mt-2'>{ resetError || 'Failed to send reset link! Please try again'}</p>
+            )}
+
+            <div className="flex justify-end gap-3 mt-6">
+              <Button type="button" variant="outline" onClick={handleCloseModal}>Cancel</Button>
+              <Button type="submit" variant="default" disabled={isResetting}>{isResetting ? 'Sending...' : 'Send Reset Link'}</Button>
+            </div>
+          </form>
+        </div>
+      </Modal>
     </div>
   );
 }
