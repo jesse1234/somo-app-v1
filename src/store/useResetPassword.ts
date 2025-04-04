@@ -3,7 +3,7 @@
 import { useState } from "react";
 import apiClient from "@/app/lib/api";
 import { useSearchParams } from "next/navigation";
-import { AxiosError } from "axios"; // Import AxiosError
+import { AxiosError } from "axios"; 
 
 interface ResetPasswordParams {
     email: string;

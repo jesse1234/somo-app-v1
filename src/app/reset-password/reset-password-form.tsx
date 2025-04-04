@@ -56,13 +56,13 @@ export function ResetPasswordForm() {
                 <CardContent>
                   <div className="space-y-4 w-full text-center">
                     <h3 className="text-xl font-bold text-dark-gray">Password Reset Successful</h3>
-                    <p className="text-dark-gray">Your password has been successfully updated.</p>
-                    <Button 
-                      onClick={() => router.push('/login')}
+                    <p className="text-dark-gray">Your password has been successfully updated. Now you may access the app.</p>
+                    {/* <Button 
+                    //   onClick={() => router.push('/')}
                       className="mt-4"
                     >
                       Return to Login
-                    </Button>
+                    </Button> */}
                   </div>
                 </CardContent>
               </Card>

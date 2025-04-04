@@ -168,7 +168,7 @@ export default function Home() {
                   {isSubmitting ? 'Signing In...' : 'Sign In'}
                 </Button>
               </div>
-              {/* {error && <p className="text-red-500 text-sm mt-2">{error.message}</p>} */}
+              {/* {errors && <p className="text-red-500 text-sm mt-2">{errors.message}</p>} */}
             </form>
           </div>
         </div>

@@ -9,7 +9,7 @@ export const useTutors = () => {
     return useQuery<TutorResponse>({
         queryKey: ['tutors'],
         queryFn: async () => {
-            const response = await apiClient.get<TutorResponse>('api/Admin/getAllTutors', 
+            const response = await apiClient.get<TutorResponse>('/api/Admin/getAllTutors', 
                 {
                     headers: {
                         Authorization: `Bearer ${accessToken}`

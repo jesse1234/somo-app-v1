@@ -212,4 +212,19 @@ interface StudentProfileResponse {
   };
 };
 
-export type { DashboardResponse, ActiveUserResponse, UserData, RegistrationData, StudentRegistrationResponse, TutorResponse, StudentResponse, SidebarResponse, TutorDetailsResponse, NumberOfLessonResponse, TutorScheduleResponse, TutorProfileResponse, StudentProfileResponse, StudentData };
+// Admin Response
+interface AdminResponse {
+  statusCode: number;
+  statusMessage: string;
+  data: [
+    {
+      id: number,
+      fullName: string,
+      profilePicture: string,
+      email: string,
+      status: string
+    }
+  ]
+}
+
+export type { DashboardResponse, ActiveUserResponse, UserData, RegistrationData, StudentRegistrationResponse, TutorResponse, StudentResponse, SidebarResponse, TutorDetailsResponse, NumberOfLessonResponse, TutorScheduleResponse, TutorProfileResponse, StudentProfileResponse, StudentData, AdminResponse };
