@@ -610,9 +610,9 @@ export default function TutorEditPage() {
                         </div>
 
                         {/* Generate Report Button */}
-                        <Button className="w-full mt-6 text-white" variant="default">
+                        {/* <Button className="w-full mt-6 text-white" variant="default">
                             Generate Report
-                        </Button>
+                        </Button> */}
                     </CardContent>
                 </Card>
                 )}

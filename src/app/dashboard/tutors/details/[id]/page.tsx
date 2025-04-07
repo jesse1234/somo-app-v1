@@ -196,9 +196,9 @@ export default function TutorDetailsPage() {
                                     </div>
                                 </div>
 
-                                <Button className="w-full mt-4 max-w-sm mx-auto"> 
+                                {/* <Button className="w-full mt-4 max-w-sm mx-auto"> 
                                     Generate Report
-                                </Button>
+                                </Button> */}
                             </div>
                         </CardContent>
                     </Card>

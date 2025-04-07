@@ -104,9 +104,9 @@ export default function StudentProfilePage() {
             </div>
 
             {/* Generate Report Button */}
-            <Button className="w-full mt-6 text-white" variant="default">
+            {/* <Button className="w-full mt-6 text-white" variant="default">
               Generate Report
-            </Button>
+            </Button> */}
           </CardContent>
         </Card>
 
@@ -139,8 +139,8 @@ export default function StudentProfilePage() {
                     <h3 className="text-xl font-semibold">{child.fullName}</h3>
                   </div>
                   <div className="flex space-x-3 ml-auto">
-                    <Button variant="outline">Save</Button>
-                    <Button>Generate Report</Button>
+                    {/* <Button variant="outline">Save</Button>
+                    <Button>Generate Report</Button> */}
                   </div>
                 </CardContent>
 
