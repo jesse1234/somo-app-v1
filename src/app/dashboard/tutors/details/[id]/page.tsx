@@ -3,7 +3,7 @@
 import { Card, CardContent } from "@/app/components/ui/Cards"
 import { Header } from "@/app/components/ui/Header"
 import Image from "next/image"
-import { Button } from "@/app/components/ui/Buttons"
+// import { Button } from "@/app/components/ui/Buttons"
 import UsersIcon from "@/app/assets/icons/users.png"
 import { useQuery } from "@tanstack/react-query"
 import { TutorDetailsResponse, TutorProfileResponse } from "@/app/types/api"
