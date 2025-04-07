@@ -18,10 +18,17 @@ import { useQuery } from '@tanstack/react-query';
 import apiClient from '@/app/lib/apiClient';
 import { AboutStepSkeleton, DocumentsStepSkeleton, ReportStepSkeleton, StepperSkeleton, TutorEditProfileSkeleton, TutorEditSkeleton } from '@/app/components/skeletons/TutorEditProfileSkeleton';
 import { Dropdown } from '@/app/components/ui/Dropdown';
+import { DocumentStatus, useDocumentApproval } from '@/store/useDocumentStatus';
+// import { TutorDocument, TutorDocuments, TableDocument } from '@/app/types/documentTypes';
+import { useQueryClient } from '@tanstack/react-query';
+import { useApproveTutor } from '@/store/useApproveTutor';
+import { SessionStatus, useApproveSession } from '@/store/useApproveSession'
 
 type Document = {
+    id: string;
     name: string;
     documentUrl: string;
+    status: DocumentStatus;
 };
 
 type TableInstance = {
@@ -39,8 +46,10 @@ type TableInstance = {
 
 export default function TutorEditPage() {
     const [activeStep, setActiveStep] = useState(0);
-
+    const queryClient = useQueryClient();
     const { id } = useParams();
+    const { approveTutor, isLoading: isApproving } = useApproveTutor();
+    const { updateSessionStatus, isLoading: isSessionUpdating } = useApproveSession()
     const {data: tutorProfile, isLoading: profileLoading } = useQuery<TutorProfileResponse>({
         queryKey: ['tutorProfile', id],
         queryFn: async () => {
@@ -48,6 +57,8 @@ export default function TutorEditPage() {
             return response.data;
         }
     });
+
+    const { updateDocumentStatus, isLoading: isDocumentUpdating } = useDocumentApproval();
 
     if(profileLoading) return <TutorEditSkeleton />
 
@@ -63,67 +74,104 @@ export default function TutorEditPage() {
         setActiveStep(step);
     };
 
-    // const handleApprove = async (document: Document) => {
-    //     try{
-    //         await apiClient.post('/api/Admin/approve-document', { // temp api
-    //             documentId: document.name,
-    //             status: 'approved'
-    //         });
-    //     } catch (error) {
-    //         console.error('Approval failed:', error);
-    //     }
-    // };
+    const handleApproveTutor = async () => {
+        try{
+            await approveTutor(id as string);
 
-    // const handleDeny = async (document: Document) => {
-    //     try{
-    //         await apiClient.post('/api/Admin/deny-document', { // temp api
-    //             documentId: document.name,
-    //             status: 'deny'
-    //         });
-    //     } catch (error) {
-    //         console.error('Deny failed:', error);
-    //     }
-    // };
+        } catch (error) {
+            console.error('Approval failed', error);
+        }
 
-    // const handlePending = async (document: Document) => {
-    //     try{
-    //         await apiClient.post('/api/Admin/pending-document', { // temp api
-    //             documentId: document.name,
-    //             status: 'pending'
-    //         });
-    //     } catch (error) {
-    //         console.error('Pending failed:', error);
-    //     }
-    // }; 
+    }
 
     const steps = [
         { label: 'About' },
         { label: 'Documents' },
         { label: 'Report' }
-    ];
+    ]; 
 
     const documents: Document[] = [
         {
+            id: tutorProfile?.data.documents.nationalId.id || '',
             name: 'National ID',
-            documentUrl: tutorProfile?.data.documents.nationalId || '',
+            //type: 'nationalId',
+            documentUrl: tutorProfile?.data.documents.nationalId.url || '',
+            status: tutorProfile?.data.documents.nationalId.status as DocumentStatus || 'Not Submitted',
         },
         {
-            name: 'Certificate of Good Conduct',
-            documentUrl: tutorProfile?.data.documents.goodConduct || '',
-        },
-        {
-            name: 'KRA PIN',
-            documentUrl: tutorProfile?.data.documents.kraPin || '',
-        },
-        {
+            id: tutorProfile?.data.documents.cpp.id || '',
             name: 'CPP',
-            documentUrl: tutorProfile?.data.documents.birthCertificate || '',
-        },
-        {
+            // type: 'cpp',
+            documentUrl: tutorProfile?.data.documents.cpp.url || '',
+            status: tutorProfile?.data.documents.cpp.status as DocumentStatus || 'NotSubmitted',
+          },
+          {
+            id: tutorProfile?.data.documents.kraPin.id || '',
+            name: 'KRA PIN',
+            // type: 'kraPin',
+            documentUrl: tutorProfile?.data.documents.kraPin.url || '',
+            status: tutorProfile?.data.documents.kraPin.status as DocumentStatus || 'NotSubmitted',
+          },
+          {
+            id: tutorProfile?.data.documents.goodConduct.id || '',
+            name: 'Certificate of Good Conduct',
+            // type: 'goodConduct',
+            documentUrl: tutorProfile?.data.documents.goodConduct.url || '',
+            status: tutorProfile?.data.documents.goodConduct.status as DocumentStatus || 'NotSubmitted',
+          },
+          {
+            id: tutorProfile?.data.documents.passportPhoto.id || '',
             name: 'Passport Photo',
-            documentUrl: tutorProfile?.data.documents.birthCertificate || '',
-        },
+            // type: 'passportPhoto',
+            documentUrl: tutorProfile?.data.documents.passportPhoto.url || '',
+            status: tutorProfile?.data.documents.passportPhoto.status as DocumentStatus || 'NotSubmitted',
+          },
     ];
+
+    const handleStatusUpdate = async (documentId: string, status: DocumentStatus) => {
+        try {
+            await updateDocumentStatus(documentId, status);
+            console.log(`Document status updated to ${status}`);
+
+            await queryClient.invalidateQueries({
+                queryKey: ['tutorProfile', id]
+            });
+        } catch (error) {
+            console.error('Failed to update document status:', error)
+        }
+    }
+
+    const handleSessionUpdate = async (sessionId: string, status: SessionStatus) => {
+        try {
+            queryClient.setQueryData(['tutorProfile', id], (oldData: TutorProfileResponse | undefined) => {
+                if (!oldData) return oldData;
+
+                return {
+                    ...oldData,
+                    data: {
+                        ...oldData.data,
+                        sessions: oldData.data.sessions.map(session => 
+                            session.id === sessionId
+                                ? { ...session, approvalStatus: status }
+                                : session
+                        )
+                    }
+                };
+            });
+
+            await updateSessionStatus(sessionId, status);
+
+            await queryClient.invalidateQueries({
+                queryKey: ['tutorProfile', id],
+                refetchType: 'active'
+            })
+        } catch (error) {
+            queryClient.invalidateQueries({
+                queryKey: ['tutorProfile', id]
+            });
+            console.error('Failed to update status of session', error);
+        }
+    } 
     
     const columns: ColumnDef<Document>[] = [
         {
@@ -171,59 +219,75 @@ export default function TutorEditPage() {
         {
             id: 'status',
             header: 'Status',
-            cell: ({ row }: { row: RowInstance }) => (
-                <span className={`px-2 py-1 rounded-full text-xs ${
-                    row.original.documentUrl 
-                        ? 'bg-green-100 text-green-800' 
-                        : 'bg-red-100 text-red-800'
-                }`}>
-                    {row.original.documentUrl ? 'Uploaded' : 'Missing'}
-                </span>
-            ),
+            cell: ({ row }: { row: RowInstance }) => {
+                const document = row.original;
+                const displayStatus = !document.documentUrl ? 'NotSubmitted' : document.status;
+
+                const statusClasses = {
+                    NotSubmitted: 'bg-gray-100 text-gray-800',
+                    Pending: 'bg-yellow-100 text-yellow-800',
+                    Approved: 'bg-green-100 text-green-800',
+                    Rejected: 'bg-red-100 text-red-800',
+                    Expired: 'bg-purple-100 text-purple-800'
+                };
+
+                return (
+                    <span className={`px-2 py-1 rounded-full text-xs ${statusClasses[displayStatus]}`}>
+                        {displayStatus}
+                    </span>
+                )
+            },
         },
         {
             id: 'actions',
             header: 'Action',
-            cell: ({ row }: { row: RowInstance }) => (
+            cell: ({ row }: { row: RowInstance }) => {
+              const document = row.original; // Get the document from the row
+              
+              return (
                 <div className="flex items-center gap-2">
-                    {row.original.documentUrl ? (
-                        <a 
-                            href={row.original.documentUrl} 
-                            download
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-primary hover:underline"
-                        >
-                            Download
-                        </a>
-                    ) : (
-                        <span className="text-gray-400">Unavailable</span>
-                    )}
-                        
-                            <Dropdown
-                                trigger={<FontAwesomeIcon icon={faEllipsisVertical} />}
-                                items={[
-                                    {
-                                        label: 'Pending',
-                                        onClick: () => console.log('Pending clicked')
-                                    },
-                                    {
-                                        label: 'Approve',
-                                        onClick: () => console.log('Approve clicked')
-                                    },
-                                    {
-                                        label: 'Not Approved',
-                                        onClick: () => console.log('Not approved clicked')
-                                    },
-                                ]}
-                            />
-                            {/* <Button variant="outline" className="p-2 hover:bg-gray-100 rounded-full">
-                                <EllipsisVerticalIcon className="w-5 h-5 text-dark-gray" />
-                            </Button>
-                        </Dropdown> */}
+                  {document.documentUrl ? (
+                    <a 
+                      href={document.documentUrl} 
+                      download
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary hover:underline"
+                    >
+                      Download
+                    </a>
+                  ) : (
+                    <span className="text-gray-400">Unavailable</span>
+                  )}
+                  
+                  <Dropdown
+                    trigger={<FontAwesomeIcon icon={faEllipsisVertical} />}
+                    items={[
+                      {
+                        label: 'Pending',
+                        onClick: () => handleStatusUpdate(document.id, 'Pending'),
+                        disabled: isDocumentUpdating
+                      },
+                      {
+                        label: 'Approve',
+                        onClick: () => handleStatusUpdate(document.id, 'Approved'),
+                        disabled: isDocumentUpdating
+                      },
+                      {
+                        label: 'Reject',
+                        onClick: () => handleStatusUpdate(document.id, 'Rejected'),
+                        disabled: isDocumentUpdating
+                      },
+                    //   document.status === 'Approved' && {
+                    //     label: 'Mark as Expired',
+                    //     onClick: () => handleStatusUpdate(document.id, 'Expired')
+                    //   },
+                    ].filter(Boolean)}
+                  />
                 </div>
-            ),
-        },
+              );
+            },
+          }
     ];
 
     const renderStepContent = (step: number) => {
@@ -332,26 +396,7 @@ export default function TutorEditPage() {
                         <div className="flex-l">
                             <div className="flex justify-between items-center mb-4">
                                 <h2 className="text-xl text-dark-gray font-semibold">Documents</h2>
-                                {/* <Button variant="default">Bulk Action</Button> */}
-                                <div className="flex justify-end">
-                                    <Dropdown
-                                        trigger={<FontAwesomeIcon icon={faEllipsisVertical} />}
-                                        items={[
-                                            {
-                                                label: 'Approve Tutor',
-                                                onClick: () => console.log('Approve tutor clicked')
-                                            },
-                                            {
-                                                label: 'Suspend Tutor',
-                                                onClick: () => console.log('Suspend tutor clicked')
-                                            },
-                                            {
-                                                label: 'Reject Tutor',
-                                                onClick: () => console.log('Reject tutor clicked')
-                                            },
-                                        ]}
-                                    />
-                                </div>
+                                <Button type="submit" variant="default" disabled={isApproving} onClick={handleApproveTutor}>Approve Tutors</Button>
                             </div>
                             <p className="text-sm text-light-gray mb-6">Documents submitted will be deleted after 30 days.</p>
                             <DataTable columns={columns} data={documents} />
@@ -394,26 +439,29 @@ export default function TutorEditPage() {
                                                     <div className="flex-1">
                                                         <div className="flex items-center justify-between mb-2">
                                                             <span className={`px-2 py-1 rounded-full text-xs ${
-                                                                session.totalRatings > 0 
-                                                                    ? 'bg-green-100 text-green-800' 
-                                                                    : 'bg-yellow-100 text-yellow-800'
+                                                                session.approvalStatus === 'Approved' ? 'bg-green-100 text-green-800' :
+                                                                session.approvalStatus === 'Not Approved' ? 'bg-red-100 text-red-800' :
+                                                                'bg-yellow-100 text-yellow-800'
                                                             }`}>
-                                                                {session.totalRatings > 0 ? 'Approved' : 'Pending'}
+                                                                {session.approvalStatus || 'Pending'}
                                                             </span>
                                                                 <Dropdown
                                                                     trigger={<FontAwesomeIcon icon={faEllipsisVertical} />}
                                                                     items={[
                                                                         {
-                                                                            label: 'Approve Lesson',
-                                                                            onClick: () => console.log('Approve lesson')
+                                                                            label: 'Approve Sesson',
+                                                                            onClick: () => handleSessionUpdate(session.id, 'Approved'),
+                                                                            disabled: isSessionUpdating
+                                                                            
                                                                         },
+                                                                        // {
+                                                                        //     label: 'Pending Lesson',
+                                                                        //     onClick: () => console.log('Set Pending Lesson')
+                                                                        // },
                                                                         {
-                                                                            label: 'Pending Lesson',
-                                                                            onClick: () => console.log('Set Pending Lesson')
-                                                                        },
-                                                                        {
-                                                                            label: 'Reject Lesson',
-                                                                            onClick: () => console.log('Reject lesson clicked')
+                                                                            label: 'Reject Sesson',
+                                                                            onClick: () => handleSessionUpdate(session.id, 'Not Approved'),
+                                                                            disabled: isSessionUpdating
                                                                         },
                                                                     ]}
                                                                 />

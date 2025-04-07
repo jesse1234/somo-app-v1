@@ -7,7 +7,7 @@ interface DropdownItem {
     onClick: () => void
     icon?: React.ReactNode
     className?: string
-
+    disabled?: boolean
 }
 
 interface DropdownProps {
@@ -65,10 +65,13 @@ export function Dropdown({
                             key={index}
                             onClick={(e) => {
                                 e.stopPropagation()
-                                item.onClick()
-                                setIsOpen(false)
+                                if (!item.disabled) {
+                                    item.onClick()
+                                    setIsOpen(false)
+                                }
                             }}
-                            className={`block w-full text-left px-4 py-2 text-sm hover:bg-gray-50 flex items-center gap-2 ${item.className || 'text-gray-700'}`}
+                            disabled={item.disabled}
+                            className={`block w-full text-left px-4 py-2 text-sm ${item.disabled ? 'cursor-not-allowed opacity-50' : 'hover:bg-gray-50'} flex items-center gap-2 ${item.className || 'text-gray-700'}`}
                             role="menuitem"
                         >
                             {item.icon && <span className="w-5">{item.icon}</span>}

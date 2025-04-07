@@ -47,9 +47,13 @@ export const useCreateAdmin = () => {
             return response;
         } catch (err: unknown) {
             const axiosError = err as AxiosError<ApiErrorResponse>;
-            const errorMessage = axiosError.message || 'Failed to create admin';
-            setError(errorMessage);
-            throw new Error(errorMessage)
+            if (axiosError.response?.status === 409) {
+                setError("User with this email already exists");
+            } else {
+                const errorMessage = axiosError.response?.data?.message || 'Failed to create admin';
+                setError(errorMessage);
+            }
+            throw err;
         } finally {
             setIsLoading(false);
         }

@@ -17,7 +17,8 @@ export default function CreateAdminPage() {
         phoneNumber: ''
     });
 
-    const { createAdmin, isLoading, error, isSuccess } = useCreateAdmin();
+    const { createAdmin, isLoading, error, isSuccess, reset } = useCreateAdmin();
+    const [validationError, setValidationError] = useState<string | null>(null)
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -27,12 +28,48 @@ export default function CreateAdminPage() {
         }));
     };
 
+    if (error) reset();
+    if (validationError) setValidationError(null);
+
+    const validateForm = () => {
+        if (formData.password !== formData.confirmPassword) {
+            setValidationError('Passwords do not match');
+            return false;
+        }
+        
+        if (formData.password.length < 8) {
+            setValidationError('Password must be at least 8 characters');
+            return false;
+        }
+        
+        // Basic email validation
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+            setValidationError('Please enter a valid email address');
+            return false;
+        }
+        
+        return true;
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        
+        if (!validateForm()) return;
+        
         try {
             await createAdmin(formData);
+            
+            // Reset form on success
+            setFormData({
+                fullName: '',
+                email: '',
+                password: '',
+                confirmPassword: '',
+                phoneNumber: ''
+            });
         } catch (err) {
-            console.error("Create admin failed", err)
+            // Error is already handled in the hook
+            console.error("Create admin failed", err);
         }
     }
 
@@ -52,9 +89,9 @@ export default function CreateAdminPage() {
                     <div className="p-6 flex flex-col h-full w-full">
                         <div className="flex-l">
 
-                            {error && (
+                            {(error || validationError) && (
                                 <div className="mb-4 p-2 text-red-500 bg-red-50 rounded">
-                                    {error}
+                                    {error || validationError}
                                 </div>
                             )}
 

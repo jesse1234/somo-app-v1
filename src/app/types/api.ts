@@ -172,17 +172,40 @@ interface TutorProfileResponse {
       description: string;
     };
     documents: {
-      nationalId: string;
-      birthCertificate: string;
-      kraPin: string;
-      goodConduct: string;
+      nationalId: {
+        id: string;
+        url: string;
+        status: string;
+      };
+      cpp: {
+        id: string;
+        url: string;
+        status: string;
+      }
+      passportPhoto: {
+        id: string;
+        url: string;
+        status: string;
+      };
+      kraPin: {
+        id: string;
+        url: string;
+        status: string;
+      };
+      goodConduct: {
+        id: string;
+        url: string;
+        status: string;
+      };
     };
     sessions: [
         {
-          thumbnailImage: string,
-          title: string,
-          about: string,
-          totalRatings: number
+          id: string;
+          thumbnailImage: string;
+          title: string;
+          about: string;
+          totalRatings: number;
+          approvalStatus: string;
       }
     ];
   };
