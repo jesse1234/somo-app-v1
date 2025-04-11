@@ -152,7 +152,7 @@ export default function Home() {
                   <button
                     type="button" 
                     onClick={() => setShowForgotPassword(true)}
-                    className="text-primary hover:underline"
+                    className="text-primary hover:underline cursor-pointer"
                   >
                     Forgot Password?
                   </button>
