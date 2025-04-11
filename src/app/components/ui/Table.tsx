@@ -63,14 +63,14 @@ export function DataTable<TData>({ columns, data, onSortChange, initialSort = []
                       <div className="flex flex-col">
                         <button 
                           onClick={() => handleSort(header.id, false)}
-                          className={`p-1 ${isSorted === 'asc' ? 'text-blue-500' : 'text-gray-400'}`}
+                          className={`p-1 cursor-pointer ${isSorted === 'asc' ? 'text-blue-500' : 'text-gray-400'}`}
                           aria-label="Sort ascending"
                         >
                           <ArrowUp size={16} />
                         </button>
                         <button 
                           onClick={() => handleSort(header.id, true)}
-                          className={`p-1 ${isSorted === 'desc' ? 'text-blue-500' : 'text-gray-400'}`}
+                          className={`p-1 cursor-pointer ${isSorted === 'desc' ? 'text-blue-500' : 'text-gray-400'}`}
                           aria-label="Sort descending"
                         >
                           <ArrowDown size={16} />
