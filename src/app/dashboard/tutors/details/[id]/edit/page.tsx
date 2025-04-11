@@ -23,6 +23,7 @@ import { DocumentStatus, useDocumentApproval } from '@/store/useDocumentStatus';
 import { useQueryClient } from '@tanstack/react-query';
 import { useApproveTutor } from '@/store/useApproveTutor';
 import { SessionStatus, useApproveSession } from '@/store/useApproveSession'
+import toast from 'react-hot-toast';
 
 type Document = {
     id: string;
@@ -77,9 +78,11 @@ export default function TutorEditPage() {
     const handleApproveTutor = async () => {
         try{
             await approveTutor(id as string);
+            toast.success("Tutor approved sucessfully");
 
         } catch (error) {
             console.error('Approval failed', error);
+            toast.error('Approval failed');
         }
 
     }
@@ -132,12 +135,14 @@ export default function TutorEditPage() {
         try {
             await updateDocumentStatus(documentId, status);
             console.log(`Document status updated to ${status}`);
+            toast.success(`Document status updated to ${status}`)
 
             await queryClient.invalidateQueries({
                 queryKey: ['tutorProfile', id]
             });
         } catch (error) {
             console.error('Failed to update document status:', error)
+            toast.error("Failed to update document status");
         }
     }
 
@@ -242,7 +247,7 @@ export default function TutorEditPage() {
             id: 'actions',
             header: 'Action',
             cell: ({ row }: { row: RowInstance }) => {
-              const document = row.original; // Get the document from the row
+              const document = row.original; 
               
               return (
                 <div className="flex items-center gap-2">

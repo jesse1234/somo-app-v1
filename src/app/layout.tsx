@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Lato } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers/providers";
+import { Toaster } from "react-hot-toast"
 
 const lato = Lato({
   weight: ['400', '700'],
@@ -22,6 +23,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${lato.variable} font-sans bg-white`}>
+        <Toaster position="top-right"/>
         <Providers>{children}</Providers>
       </body>
     </html>

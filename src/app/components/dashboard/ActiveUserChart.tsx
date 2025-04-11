@@ -98,17 +98,17 @@ export function ActiveUserChart({
                 <h3 className="font-semibold mb-2">Active Users</h3>
                 <div className="flex bg-gray-100 rounded-lg p-1">
                     <button 
-                        className={`px-4 py-1 text-sm font-medium rounded-lg transition-all duration-200 ${timePeriod === 'day' ? 'bg-white text-primary shadow' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                        className={`px-4 py-1 text-sm font-medium rounded-lg transition-all cursor-pointer duration-200 ${timePeriod === 'day' ? 'bg-white text-primary shadow' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
                         onClick={() => setTimePeriod('day')}>
                         Day
                     </button>
                     <button 
-                        className={`px-4 py-1 text-sm font-medium rounded-lg transition-all duration-200 ${timePeriod === 'week' ? 'bg-white text-primary shadow' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                        className={`px-4 py-1 text-sm font-medium rounded-lg transition-all cursor-pointer duration-200 ${timePeriod === 'week' ? 'bg-white text-primary shadow' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
                         onClick={() => setTimePeriod('week')}>
                          Week
                     </button>
                     <button 
-                        className={`px-4 py-1 text-sm font-medium rounded-lg transition-all duration-200 ${timePeriod === 'month' ? 'bg-white text-primary shadow' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                        className={`px-4 py-1 text-sm font-medium rounded-lg transition-all cursor-pointer duration-200 ${timePeriod === 'month' ? 'bg-white text-primary shadow' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
                         onClick={() => setTimePeriod('month')}>
                         Month
                     </button>

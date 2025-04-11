@@ -34,7 +34,7 @@ export function Header({ userName, header, showFilter = false, backButton }: Hea
           {backButton?.show && (
             <button 
               onClick={handleBack}
-              className="flex items-center mr-3 p-2 rounded-lg hover:bg-gray-200 transition-colors"
+              className="flex items-center mr-3 p-2 rounded-lg hover:bg-gray-200 transition-colors cursor-pointer"
               aria-label="Go back"
             >
               <ArrowLeftIcon className="h-5 w-5 text-gray-600 hover:text-primary" />

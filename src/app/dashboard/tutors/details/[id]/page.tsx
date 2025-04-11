@@ -53,7 +53,8 @@ export default function TutorDetailsPage() {
             backButton={{
                 show: true,
                 customRoute: `/dashboard/tutors/`
-            }}/>
+            }}
+            />
 
             <div className="p-6 space-y-6">
                 {/* Stat Cards */}
@@ -108,61 +109,61 @@ export default function TutorDetailsPage() {
                         <CardContent className="flex flex-col items-center p-4 w-full"> {/* Reduced side padding */}
                             <div className="flex flex-col w-full">
                                 {/* Profile Header - unchanged */}
-<div className="flex items-center justify-between mb-4 w-full px-2">
-    <h2 className="text-lg font-semibold">Profile</h2>
-    <a href={`/dashboard/tutors/details/${id}/edit`}>
-        <Image
-            src={UsersIcon}
-            alt="Users Icon"
-            width={24}
-            height={24}
-            className="hover:opacity-80 transition-opacity"
-        />
-    </a>  
-</div>
-
-{/* Centered Profile Picture with perfect circle */}
-<div className="flex justify-center mb-3">
-    {tutorProfile?.data.profile.profilePicture ? (
-        <div className="w-32 h-32 rounded-full overflow-hidden border-2 border-gray-200">
-            <Image
-                src={tutorProfile.data.profile.profilePicture}
-                alt="Profile Image"
-                width={128}
-                height={128}
-                className="w-full h-full object-cover"
-            />
-        </div>
-    ) : (
-        <div className="w-32 h-32 rounded-full bg-gray-100 flex items-center justify-center">
-            <FontAwesomeIcon 
-                icon={faCircleUser}
-                className="text-gray-400 text-7xl" 
-            />
-        </div>
-    )}
-</div>
-
-{/* Centered Name */}
-<h3 className="text-xl font-semibold mb-6 text-center w-full">
-    {tutorProfile?.data.profile.fullName}
-</h3>
-
-{/* Profile Completion */}
-<div className="w-full mb-4 px-2 mt-2">
-                        <span className="text-gray-500">Profile Completion</span>
-                            <div className="flex items-center gap-3"> 
-                                <span className="font-medium text-primary">
-                                {tutorProfile?.data.profile.profileCompletionPercentage}%
-                                </span>
-                                <div className="flex-1 bg-gray-200 rounded-full h-2.5">
-                                <div 
-                                    className="bg-primary h-2.5 rounded-full"
-                                    style={{ width: `${tutorProfile?.data.profile.profileCompletionPercentage}%` }}
-                                ></div>
+                                <div className="flex items-center justify-between mb-4 w-full px-2">
+                                    <h2 className="text-lg font-semibold">Profile</h2>
+                                    <a href={`/dashboard/tutors/details/${id}/edit`}>
+                                        <Image
+                                            src={UsersIcon}
+                                            alt="Users Icon"
+                                            width={24}
+                                            height={24}
+                                            className="hover:opacity-80 transition-opacity"
+                                        />
+                                    </a>  
                                 </div>
+
+                            {/* Centered Profile Picture with perfect circle */}
+                            <div className="flex justify-center mb-3">
+                                {tutorProfile?.data.profile.profilePicture ? (
+                                    <div className="w-32 h-32 rounded-full overflow-hidden border-2 border-gray-200">
+                                        <Image
+                                            src={tutorProfile.data.profile.profilePicture}
+                                            alt="Profile Image"
+                                            width={128}
+                                            height={128}
+                                            className="w-full h-full object-cover"
+                                        />
+                                    </div>
+                                ) : (
+                                    <div className="w-32 h-32 rounded-full bg-gray-100 flex items-center justify-center">
+                                        <FontAwesomeIcon 
+                                            icon={faCircleUser}
+                                            className="text-gray-400 text-7xl" 
+                                        />
+                                    </div>
+                                )}
                             </div>
-                        </div>
+
+                            {/* Centered Name */}
+                            <h3 className="text-xl font-semibold mb-6 text-center w-full">
+                                {tutorProfile?.data.profile.fullName}
+                            </h3>
+
+                            {/* Profile Completion */}
+                            <div className="w-full mb-4 px-2 mt-2">
+                                <span className="text-gray-500">Profile Completion</span>
+                                    <div className="flex items-center gap-3"> 
+                                        <span className="font-medium text-primary">
+                                        {tutorProfile?.data.profile.profileCompletionPercentage}%
+                                        </span>
+                                        <div className="flex-1 bg-gray-200 rounded-full h-2.5">
+                                        <div 
+                                            className="bg-primary h-2.5 rounded-full"
+                                            style={{ width: `${tutorProfile?.data.profile.profileCompletionPercentage}%` }}
+                                        ></div>
+                                        </div>
+                                    </div>
+                                </div>
 
                                 {/* Profile Details */}
                                 <div className="w-full space-y-3 px-2"> 

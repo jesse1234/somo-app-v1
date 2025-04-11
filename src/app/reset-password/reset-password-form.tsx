@@ -43,7 +43,7 @@ export function ResetPasswordForm() {
 
         try {
             await resetPassword(password, confirmPassword);
-            router.push('/')
+            //router.push('/')
         } catch (err) {
             console.error('Password reset error:', err);
         }

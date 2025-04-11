@@ -12,9 +12,19 @@ import { Link } from "@/app/components/ui/Link";
 import Image from "next/image";
 import { StudentsTableSkeleton } from "@/app/components/skeletons/TableSkeletons";
 import { useStudents } from "@/store/useGetStudents";
+import { useState } from "react";
+import { Pagination } from "@/app/components/ui/Pagination";
 
 export default function StudentsPage() {
-  const { data, isLoading, error } = useStudents();
+  const [queryParams, setQueryParams] = useState({
+    page: 1,
+    pageSize: 10,
+    sortBy: 'FullName',
+    sortDescending: false,
+    searchTerm: ''
+  });
+
+  const { data, isLoading, error } = useStudents(queryParams);
 
   const columns: ColumnDef<StudentData>[] = [
       {
@@ -68,7 +78,6 @@ export default function StudentsPage() {
       },
       {
           header: 'Status',
-          // Using ongoingLessons to determine status since numberOfStudents isn't available
           cell: ({ row }) => (
               <span className={`px-2 py-1 rounded-full text-sm ${
                 row.original.ongoingLessons > 0 
@@ -81,6 +90,21 @@ export default function StudentsPage() {
       },
   ];
 
+  const handlePageChange = (page: number) => {
+    setQueryParams(prev => ({
+      ...prev,
+      page
+    }));
+  }
+
+  // const handleSearch = (searchTerm: string) => {
+  //   setQueryParams(prev => ({
+  //     ...prev,
+  //     searchTerm,
+  //     page: 1
+  //   }))
+  // }
+
   if (isLoading) {
     return <StudentsTableSkeleton />;
   }
@@ -89,7 +113,7 @@ export default function StudentsPage() {
     return <div className="p-6 text-red-500">Error loading student data</div>;
   }
 
-  if (!data?.length) {
+  if (!data?.students?.length) {
     return (
       <div className="flex flex-col">
         <Header userName="Admin" header="Students" showFilter={true}/>
@@ -104,7 +128,23 @@ export default function StudentsPage() {
       <div className="flex flex-col">
           <Header userName="Admin" header="Students" showFilter={true}/>
           <div className="p-6 bg-white rounded-lg shadow">
-              <DataTable columns={columns} data={data} />
+              <DataTable 
+                columns={columns} 
+                data={data.students}
+                onSortChange={(sortBy, sortDescending) => {
+                  setQueryParams(prev => ({
+                    ...prev,
+                    sortBy,
+                    sortDescending,
+                    page: 1
+                  }));
+                }} 
+                />
+                <Pagination 
+                currentPage={data.pagination.currentPage}
+                totalPages={data.pagination.totalPages}
+                onPageChange={handlePageChange}
+                />
           </div>
       </div>
   );

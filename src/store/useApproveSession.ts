@@ -2,6 +2,7 @@ import { useState } from 'react';
 import apiClient from '@/app/lib/api';
 import { AxiosError } from 'axios';
 import useAuthStore from './useAuthStore';
+import toast from 'react-hot-toast';
 
 interface ApiErrorResponse {
   message?: string;
@@ -20,6 +21,7 @@ export const useApproveSession = () => {
         setIsLoading(true);
         setError(null);
         setIsSuccess(false);
+        const toastId = toast.loading('Updating session status...');
 
         try {
             await apiClient.put(`/api/Admin/approve-session/${sessionId}`, 
@@ -31,11 +33,13 @@ export const useApproveSession = () => {
                 }
             );
             setIsSuccess(true);
+            toast.success(`Session ${status} successfully`, { id: toastId})
             return true;
         } catch (err: unknown) {
             const axiosError = err as AxiosError<ApiErrorResponse>;
             const errorMessage = axiosError.response?.data?.message || axiosError.message || 'Failed to update session data';
             setError(errorMessage);
+            toast.error(errorMessage, { id: toastId });
             throw new Error(errorMessage);
         } finally {
             setIsLoading(false);

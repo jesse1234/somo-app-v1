@@ -71,29 +71,53 @@ interface StudentData {
   ongoingLessons: number;
   email: string;
   phoneNumber: string;
+  status: string;
 }
 
-interface StudentResponse {
+export interface PaginationInfo {
+  totalCount: number;
+  totalPages: number;
+  currentPage: number;
+  pageSize: number;
+}
+
+export interface QueryParams {
+  sortBy?: string;
+  sortDescending?: boolean;
+  page?: number;
+  pageSize?: number;
+  searchTerm?: string;
+}
+
+export interface StudentsResponse {
   statusCode: number;
   statusMessage: string;
-  data: StudentData[];
+  data: {
+    students: StudentData[];
+    pagination: PaginationInfo;
+  };
 }
 
 // Tutor response
 
+export interface Tutor {
+  id: string;
+  profilePicture: string;
+  fullName: string;
+  email: string;
+  phoneNumber: string;
+  numberOfStudents: number;
+}
+
+interface TutorsData {
+  tutors: Tutor[];
+  pagination: PaginationInfo;
+}
+
 interface TutorResponse {
   statusCode: number;
   statusMessage: string;
-  data: [
-      {
-        id: string;
-        profilePicture: string;
-        fullName: string;
-        email: string;
-        phoneNumber: string;
-        numberOfStudents: number;
-    }
-]
+  data: TutorsData;
 }
 
 interface TutorDetailsResponse {
@@ -250,4 +274,6 @@ interface AdminResponse {
   ]
 }
 
-export type { DashboardResponse, ActiveUserResponse, UserData, RegistrationData, StudentRegistrationResponse, TutorResponse, StudentResponse, SidebarResponse, TutorDetailsResponse, NumberOfLessonResponse, TutorScheduleResponse, TutorProfileResponse, StudentProfileResponse, StudentData, AdminResponse };
+
+
+export type { DashboardResponse, ActiveUserResponse, UserData, RegistrationData, StudentRegistrationResponse, TutorResponse, SidebarResponse, TutorDetailsResponse, NumberOfLessonResponse, TutorScheduleResponse, TutorProfileResponse, StudentProfileResponse, StudentData, AdminResponse };

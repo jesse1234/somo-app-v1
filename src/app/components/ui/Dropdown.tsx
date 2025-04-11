@@ -48,7 +48,7 @@ export function Dropdown({
                 e.stopPropagation()
                 setIsOpen(!isOpen)
             }}
-            className="focus:outline-none"
+            className="focus:outline-none cursor-pointer"
             aria-expanded={isOpen}
             aria-haspopup="true"
             >

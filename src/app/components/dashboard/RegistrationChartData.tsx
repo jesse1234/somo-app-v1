@@ -112,7 +112,7 @@ export function StudentRegistrationChart({
                 <h3 className="font-semibold mb-2">Student Registration Metrics</h3>
                     <div className="flex bg-gray-100 rounded-lg p-1">
                     <button 
-                        className={`px-4 py-1 text-sm font-medium rounded-lg transition-all duration-200 ${
+                        className={`px-4 py-1 text-sm font-medium rounded-lg transition-all cursor-pointer duration-200 ${
                         registrationTimePeriod === 'day' 
                             ? 'bg-white text-primary shadow' 
                             : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
@@ -122,7 +122,7 @@ export function StudentRegistrationChart({
                         Day
                     </button>
                     <button 
-                        className={`px-4 py-1 text-sm font-medium rounded-lg transition-all duration-200 ${
+                        className={`px-4 py-1 text-sm font-medium rounded-lg transition-all cursor-pointer duration-200 ${
                         registrationTimePeriod === 'week' 
                             ? 'bg-white text-primary shadow' 
                             : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
@@ -132,7 +132,7 @@ export function StudentRegistrationChart({
                         Week
                     </button>
                     <button 
-                        className={`px-4 py-1 text-sm font-medium rounded-lg transition-all duration-200 ${
+                        className={`px-4 py-1 text-sm font-medium rounded-lg transition-all cursor-pointer duration-200 ${
                         registrationTimePeriod === 'month' 
                         ? 'bg-white text-primary shadow' 
                         : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
@@ -142,7 +142,7 @@ export function StudentRegistrationChart({
                         Month
                     </button>
                     <button 
-                        className={`px-4 py-1 text-sm font-medium rounded-lg transition-all duration-200 ${
+                        className={`px-4 py-1 text-sm font-medium rounded-lg transition-all cursor-pointer duration-200 ${
                         registrationTimePeriod === 'year' 
                         ? 'bg-white text-primary shadow' 
                         : 'bg-gray-100 text-gray-600 hover:bg-gray-200'

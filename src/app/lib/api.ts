@@ -3,9 +3,6 @@ import axios, { AxiosError, AxiosRequestConfig, AxiosResponse} from 'axios';
 
 const api = axios.create({
     baseURL: process.env.NEXT_PUBLIC_API_URL || "https://api-somo.dataposit.co.ke",
-    headers: {
-        "Content-Type": "application/json"
-    },
 });
 
 
@@ -29,11 +26,17 @@ const request = async <T, D = unknown>(
     config?: AxiosRequestConfig<D>
 ) : Promise<T> => {
     try {
+        const isFormData = data instanceof FormData;
+
         const response: AxiosResponse<T> = await api({
             method, 
             url,
             data,
             ...config,
+            headers: {
+                ...config?.headers,
+                ...(isFormData ? {} : {"Content-Type": "application/json"}),
+            }
         });
         return response.data;
     } catch (error: unknown) {
