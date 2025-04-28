@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import apiClient from "@/app/lib/api";
-import useAuthStore from "./useAuthStore";
-import { QueryParams, TutorResponse } from "@/app/types/api";
+import useAuthStore from "./useAuthHook";
+import { TutorQueryParams, TutorResponse } from "@/app/types/api";
 
-export const useTutors = (queryParams: QueryParams) => {
+export const useTutors = (queryParams: TutorQueryParams) => {
     const { accessToken } = useAuthStore();
 
     return useQuery<TutorResponse>({
@@ -17,6 +17,11 @@ export const useTutors = (queryParams: QueryParams) => {
             if (queryParams.page) params.append('page', queryParams.page.toString());
             if (queryParams.pageSize) params.append('pageSize', queryParams.pageSize.toString());
             if (queryParams.searchTerm) params.append('searchTerm', queryParams.searchTerm.toString());
+            if (queryParams.status) params.append('status', queryParams.status);
+            if (queryParams.startDate) params.append('startDate', queryParams.startDate);
+            if (queryParams.endDate) params.append('endDate', queryParams.endDate);
+            if (queryParams.minStudents) params.append('minStudents', queryParams.minStudents.toString());
+            if (queryParams.maxStudents) params.append ('maxStudents', queryParams.maxStudents.toString());
 
             const response = await apiClient.get<TutorResponse>(`/api/Admin/getAllTutors?${params.toString()}`, 
                 {
@@ -26,7 +31,17 @@ export const useTutors = (queryParams: QueryParams) => {
                 }
             );
             console.log('API Response:', response);
-            return response;
+            return response ?? {
+                data: {
+                    tutors: [],
+                    pagination: {
+                        totalCount: 0,
+                        totalPages: 0,
+                        currentPage: 1,
+                        pageSize: 10
+                    }
+                }
+            };
             
         },
         enabled: !!accessToken,

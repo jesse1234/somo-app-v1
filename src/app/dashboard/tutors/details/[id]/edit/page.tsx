@@ -14,16 +14,14 @@ import { TutorProfileResponse } from "@/app/types/api"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faCircleUser, faEllipsisVertical, faStar } from "@fortawesome/free-solid-svg-icons"
 import { useParams } from 'next/navigation';
-import { useQuery } from '@tanstack/react-query';
-import apiClient from '@/app/lib/apiClient';
 import { AboutStepSkeleton, DocumentsStepSkeleton, ReportStepSkeleton, StepperSkeleton, TutorEditProfileSkeleton, TutorEditSkeleton } from '@/app/components/skeletons/TutorEditProfileSkeleton';
 import { Dropdown } from '@/app/components/ui/Dropdown';
 import { DocumentStatus, useDocumentApproval } from '@/store/useDocumentStatus';
-// import { TutorDocument, TutorDocuments, TableDocument } from '@/app/types/documentTypes';
 import { useQueryClient } from '@tanstack/react-query';
 import { useApproveTutor } from '@/store/useApproveTutor';
 import { SessionStatus, useApproveSession } from '@/store/useApproveSession'
 import toast from 'react-hot-toast';
+import { useTutorProfile } from '@/store/useGetTutorProfile';
 
 type Document = {
     id: string;
@@ -51,13 +49,7 @@ export default function TutorEditPage() {
     const { id } = useParams();
     const { approveTutor, isLoading: isApproving } = useApproveTutor();
     const { updateSessionStatus, isLoading: isSessionUpdating } = useApproveSession()
-    const {data: tutorProfile, isLoading: profileLoading } = useQuery<TutorProfileResponse>({
-        queryKey: ['tutorProfile', id],
-        queryFn: async () => {
-            const response = await apiClient.get(`/api/Admin/tutorProfile/${id}`);
-            return response.data;
-        }
-    });
+    const {data: tutorProfile, isLoading: profileLoading } = useTutorProfile(id as string)
 
     const { updateDocumentStatus, isLoading: isDocumentUpdating } = useDocumentApproval();
 

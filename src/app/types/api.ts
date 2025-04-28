@@ -81,12 +81,30 @@ export interface PaginationInfo {
   pageSize: number;
 }
 
-export interface QueryParams {
+export interface StudentQueryParams {
   sortBy?: string;
   sortDescending?: boolean;
   page?: number;
   pageSize?: number;
   searchTerm?: string;
+  accountType?: string;
+  status?: string;
+  startDate?: string;
+  endDate?: string;
+}
+
+export interface TutorQueryParams {
+  sortBy?: string;
+  sortDescending?: boolean;
+  page?: number;
+  pageSize?: number;
+  searchTerm?: string;
+  accountType?: string;
+  status?: string;
+  startDate?: string;
+  endDate?: string;
+  minStudents?: number;
+  maxStudents?: number;
 }
 
 export interface StudentsResponse {
@@ -107,6 +125,7 @@ export interface Tutor {
   email: string;
   phoneNumber: string;
   numberOfStudents: number;
+  status: string;
 }
 
 interface TutorsData {

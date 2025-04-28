@@ -77,7 +77,7 @@ export default function AdminPage() {
   if (!data?.data?.length) {
     return (
       <div className="flex flex-col">
-        <Header userName="Admin" header="Students" showFilter={true}/>
+        <Header userName="Admin" header="Students" />
         <div className="p-6 bg-white rounded-lg shadow">
           <p>No admins found</p>
         </div>
@@ -87,7 +87,7 @@ export default function AdminPage() {
 
   return (
       <div className="flex flex-col">
-          <Header userName="Admin" header="Admins" showFilter={true}/>
+          <Header userName="Admin" header="Admins" />
           <div className="flex justify-end mb-2">
             <Link href='/dashboard/admins/create_admin'><Button variant='default'>Create Admin</Button></Link>
           </div>

@@ -11,7 +11,7 @@ const Link = forwardRef<HTMLAnchorElement, LinkProps> (
     ({ className, variant = "default", href, ...props }, ref) => {
         const variantStyles = {
             default: "text-primary hover:text-primary/90",
-            muted: "text-gray-500 hover:text-gray-800",
+            muted: "text-light-gray hover:text-gray-800",
         }
 
         return (

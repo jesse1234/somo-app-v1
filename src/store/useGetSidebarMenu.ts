@@ -1,16 +1,15 @@
+import { SidebarResponse } from "@/app/types/api";
+import useAuthStore from "./useAuthHook"
 import { useQuery } from "@tanstack/react-query";
 import apiClient from "@/app/lib/api";
-import useAuthStore from "./useAuthHook";
-import { AdminResponse } from "@/app/types/api";
 
-
-export const useGetAdmins = () => {
+export const useGetSidebarMenu = () => {
     const { accessToken } = useAuthStore();
 
-    return useQuery<AdminResponse>({
-        queryKey: ['admins'],
+    return useQuery<SidebarResponse>({
+        queryKey: ['sidebarMenu', accessToken],
         queryFn: async () => {
-            const response = await apiClient.get<AdminResponse>('/api/Admin/admins', 
+            const response = await apiClient.get<SidebarResponse>('/api/Admin/menu',
                 {
                     headers: {
                         Authorization: `Bearer ${accessToken}`
@@ -18,6 +17,7 @@ export const useGetAdmins = () => {
                 }
             );
             return response;
-        }
+        },
+        enabled: !!accessToken
     })
 }

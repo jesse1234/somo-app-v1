@@ -4,10 +4,8 @@ import { useState } from "react"
 import { Card, CardContent } from "@/app/components/ui/Cards"
 import { ChevronLeft, ChevronRight, Check } from "lucide-react"
 import { format, addDays, startOfWeek, addWeeks, subWeeks, parseISO, isSameDay } from "date-fns"
-import { useQuery } from "@tanstack/react-query"
-import apiClient from "@/app/lib/apiClient"
-import { TutorScheduleResponse } from "@/app/types/api"
 import { WeeklyScheduleSkeleton } from "../skeletons/TutorDetailsSkeleton"
+import { useGetWeeklySchedule } from "@/store/useGetWeeklySchedule"
 
 interface WeeklyScheduleProps {
   tutorId: string
@@ -19,21 +17,23 @@ export default function WeeklySchedule({ tutorId, className }: WeeklySchedulePro
   const [weekStart, setWeekStart] = useState(startOfWeek(currentDate, { weekStartsOn: 1 }))
 
   // Fetch schedule data
-  const { data: scheduleData, isLoading } = useQuery<TutorScheduleResponse>({
-    queryKey: ['tutorSchedule', tutorId],
-    queryFn: async () => {
-      const response = await apiClient.get(
-        `/api/Availability/tutor/${tutorId}/schedules?timeZoneId=Africa%2FNairobi&months=1`
-      )
-      return response.data
-    }
-  })
+  // const { data: scheduleData, isLoading } = useQuery<TutorScheduleResponse>({
+  //   queryKey: ['tutorSchedule', tutorId],
+  //   queryFn: async () => {
+  //     const response = await apiClient.get(
+  //       `/api/Availability/tutor/${tutorId}/schedules?timeZoneId=Africa%2FNairobi&months=1`
+  //     )
+  //     return response.data
+  //   }
+  // })
+
+  const { data: scheduleData, isLoading } = useGetWeeklySchedule(tutorId)
 
   if (isLoading) return <WeeklyScheduleSkeleton />
 
   // Time slots from 7AM to 6PM
   const timeSlots = Array.from({ length: 12 }, (_, i) => {
-    const hour = i + 7 // Starting from 7AM
+    const hour = i + 7 
     return `${hour.toString().padStart(2, '0')}:00-${(hour + 1).toString().padStart(2, '0')}:00`
   })
 

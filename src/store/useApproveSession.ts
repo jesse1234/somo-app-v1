@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import apiClient from '@/app/lib/api';
 import { AxiosError } from 'axios';
-import useAuthStore from './useAuthStore';
+import useAuthStore from './useAuthHook';
 import toast from 'react-hot-toast';
 
 interface ApiErrorResponse {

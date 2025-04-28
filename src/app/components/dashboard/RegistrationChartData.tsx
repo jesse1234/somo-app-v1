@@ -95,8 +95,8 @@ export function StudentRegistrationChart({
             {
                 label: 'Registrations',
                 data: data?.data.data.map(item => item.count) || [],
-                borderColor: '#3B82F6',
-                backgroundColor: '#3B82F6',
+                borderColor: '#6E39CB',
+                backgroundColor: '#6E39CB',
                 tension: 0.4, 
                 fill: {
                     target: 'origin',

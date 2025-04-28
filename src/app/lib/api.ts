@@ -1,9 +1,50 @@
-//import useAuthStore from '@/store/useAuthStore';
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse} from 'axios';
+import useAuthStore from '@/store/useAuthHook';
+import instance from './axiosInstance';
+import { AxiosError, AxiosRequestConfig, AxiosResponse} from 'axios';
 
-const api = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_API_URL || "https://api-somo.dataposit.co.ke",
-});
+instance.interceptors.request.use(
+    (config) => {
+        const { accessToken } = useAuthStore.getState();
+        if (accessToken) {
+            config.headers.Authorization = `Bearer ${accessToken}`;
+        }
+        return config;
+    },
+    (error) => Promise.reject(error)
+);
+
+// Response token interceptor
+instance.interceptors.response.use(
+    (response) => response, 
+    async (error: AxiosError) => {
+        const originalRequest = error.config as AxiosRequestConfig & { _retry?: boolean; };
+
+        if (error.response?.status === 401 && !originalRequest._retry) {
+            originalRequest._retry = true;
+
+            try {
+                const newAccessToken = await useAuthStore.getState().refreshAccessToken();
+
+                if (originalRequest.headers) {
+                    originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+                } else {
+                    originalRequest.headers = {
+                        Authorization: `Bearer ${newAccessToken}`
+                    };
+                }
+
+                return instance(originalRequest);
+            } catch (refreshError) {
+                console.error("Refresh token error:", refreshError)
+                useAuthStore.getState().setPendingRequest(originalRequest);
+                window.dispatchEvent(new CustomEvent('showSessionExpired'));
+                return Promise.reject(new Error('SESSION_EXPIRED'));
+            }
+        }
+
+        return Promise.reject(error);
+    }
+)
 
 
 // export interface ApiResponse<T> {
@@ -28,7 +69,7 @@ const request = async <T, D = unknown>(
     try {
         const isFormData = data instanceof FormData;
 
-        const response: AxiosResponse<T> = await api({
+        const response: AxiosResponse<T> = await instance({
             method, 
             url,
             data,

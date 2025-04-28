@@ -11,6 +11,8 @@
   --color-input-border: #DBDCDE;
   --color-dark-gray: #3A3541;
   --color-light-gray: #89868D;
+  --color-light-green: #CCEFBF;
+  --color-light-orange: #F2994A;
   /* --color-blue-50: #315090; */
 }
 
@@ -49,6 +51,14 @@
 
   .text-light-gray {
     color: var(--color-light-gray)
+  }
+
+  .bg-light-green {
+    background-color: var(--color-light-green);
+  }
+
+  .border-color-orange {
+    border-color: var(--color-light-orange);
   }
 
   /* .bg-blue-50 {

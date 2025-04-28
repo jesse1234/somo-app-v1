@@ -3,7 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import apiClient from "@/app/lib/api";
 import { StudentProfileResponse } from "@/app/types/api";
-import useAuthStore from "./useAuthStore";
+import useAuthStore from "./useAuthHook";
 
 export const useStudentProfile = (studentId: string) => {
     const { accessToken } = useAuthStore(); 

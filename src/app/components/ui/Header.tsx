@@ -1,22 +1,21 @@
+"use client";
+
 import React from 'react';
 import { SearchBar } from '../ui/SearchBar';
 import { UserAvatar } from './UserAvatar';
-import FilterIcon from '@/app/assets/icons/filter.png';
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
-import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
 interface HeaderProps {
     userName: string;
     header: string;
-    showFilter?: boolean;
     backButton?: {
       show: boolean;
       customRoute?: string;
     }
 }
 
-export function Header({ userName, header, showFilter = false, backButton }: HeaderProps) {
+export function Header({ userName, header, backButton }: HeaderProps) {
   const router = useRouter();
   
   const handleBack = () => {
@@ -46,17 +45,6 @@ export function Header({ userName, header, showFilter = false, backButton }: Hea
               <SearchBar />
           </div>
           <div className="flex items-center space-x-95 ml-auto">
-            {showFilter && (
-              <button className="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-gray-200">
-                <Image
-                  src={FilterIcon}
-                  alt="Filter"
-                  width={20}
-                  height={20}
-                />
-                   <span>Apply Filter</span>
-              </button>
-            )}
             <UserAvatar name={userName} />
           </div>
         </div>

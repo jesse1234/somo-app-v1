@@ -3,19 +3,16 @@
 import { Card, CardContent } from "@/app/components/ui/Cards"
 import { Header } from "@/app/components/ui/Header"
 import Image from "next/image"
-// import { Button } from "@/app/components/ui/Buttons"
-import UsersIcon from "@/app/assets/icons/users.png"
-import { useQuery } from "@tanstack/react-query"
-import { TutorDetailsResponse, TutorProfileResponse } from "@/app/types/api"
-import apiClient from "@/app/lib/apiClient"
 import { useParams } from "next/navigation"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faCircleUser, faStar, faStarHalfAlt } from "@fortawesome/free-solid-svg-icons"
+import { faCircleUser, faStar, faStarHalfAlt, faUserGroup } from "@fortawesome/free-solid-svg-icons"
 import BarChart from "@/app/components/ui/Barchart"
 import { DatePickerDropdown } from "@/app/components/ui/DateDropdown"
 import { useState } from "react"
 import WeeklySchedule from "@/app/components/ui/WeeklySchedule"
 import { TutorDetailsSkeleton } from "@/app/components/skeletons/TutorDetailsSkeleton"
+import { useTutorProfile } from "@/store/useGetTutorProfile"
+import { useTutorDetails } from "@/store/useGetTutorDetails"
 
 
 export default function TutorDetailsPage() {
@@ -25,21 +22,9 @@ export default function TutorDetailsPage() {
       });
 
     const { id } = useParams();
-    const { data: summaryData, isLoading } = useQuery<TutorDetailsResponse>({
-        queryKey: ['tutorDetails', id],
-        queryFn: async () => {
-            const response = await apiClient.get(`/api/Admin/tutor/${id}/summary`);
-            return response.data;
-        }
-    });
+    const { data: summaryData, isLoading } = useTutorDetails(id as string);
 
-    const {data: tutorProfile, isLoading: profileLoading } = useQuery<TutorProfileResponse>({
-        queryKey: ['tutorProfile', id],
-        queryFn: async () => {
-            const response = await apiClient.get(`/api/Admin/tutorProfile/${id}`);
-            return response.data;
-        }
-    });
+    const {data: tutorProfile, isLoading: profileLoading } = useTutorProfile(id as string)
 
     if(isLoading || profileLoading) {
         return <TutorDetailsSkeleton />
@@ -112,17 +97,10 @@ export default function TutorDetailsPage() {
                                 <div className="flex items-center justify-between mb-4 w-full px-2">
                                     <h2 className="text-lg font-semibold">Profile</h2>
                                     <a href={`/dashboard/tutors/details/${id}/edit`}>
-                                        <Image
-                                            src={UsersIcon}
-                                            alt="Users Icon"
-                                            width={24}
-                                            height={24}
-                                            className="hover:opacity-80 transition-opacity"
-                                        />
+                                        <FontAwesomeIcon icon={faUserGroup} className="hover:opacity-80 transition-opacity" style={{color: '#bfbfbf', width: 24, height: 24}}/>
                                     </a>  
                                 </div>
 
-                            {/* Centered Profile Picture with perfect circle */}
                             <div className="flex justify-center mb-3">
                                 {tutorProfile?.data.profile.profilePicture ? (
                                     <div className="w-32 h-32 rounded-full overflow-hidden border-2 border-gray-200">

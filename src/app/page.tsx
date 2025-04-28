@@ -7,7 +7,7 @@ import { Button } from './components/ui/Buttons';
 import { Input } from './components/ui/Input';
 import { Label } from './components/ui/Label';
 import Image from 'next/image';
-import useAuthStore from '@/store/useAuthStore';
+import useAuthStore from '@/store/useAuthHook';
 import { useRouter } from 'next/navigation';
 import { Modal } from '@/app/components/ui/Modal';
 import { useForgotPassword } from '@/store/useForgotPassword';

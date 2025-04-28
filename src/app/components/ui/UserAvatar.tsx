@@ -1,10 +1,11 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import Image from 'next/image';
-import DefaultAvatar from '@/app/assets/icons/default avatar.jpg';
-import useAuthStore from '@/store/useAuthStore';
+
+import useAuthStore from '@/store/useAuthHook';
 import { useRouter } from 'next/navigation';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCircleUser } from '@fortawesome/free-solid-svg-icons';
 
 interface UserAvatarProps {
     name: string;
@@ -17,7 +18,6 @@ export function UserAvatar({ name }: UserAvatarProps) {
     const router = useRouter();
     const logout = useAuthStore(state => state.logout);
 
-    // Close dropdown when clicking outside
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -46,13 +46,14 @@ export function UserAvatar({ name }: UserAvatarProps) {
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             >
                 <div className="relative">
-                    <Image
+                    <FontAwesomeIcon icon={faCircleUser} className="text-gray-500 fa-3x" />
+                    {/* <Image
                         src={DefaultAvatar}
                         alt={name}
                         width={40}
                         height={40}
                         className="w-12 h-12 rounded-full"
-                    />
+                    /> */}
                     <div className="absolute bottom-0 right-0 bg-primary p-1 rounded-full">
                         <svg
                             className="w-3 h-3 text-white"

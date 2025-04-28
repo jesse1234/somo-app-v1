@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import apiClient from '@/app/lib/api';
 import { AxiosError } from 'axios';
-import useAuthStore from './useAuthStore';
+import useAuthStore from './useAuthHook';
 
 interface ApiErrorResponse {
   message?: string;

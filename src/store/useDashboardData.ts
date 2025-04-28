@@ -1,14 +1,24 @@
 import { useQuery } from "@tanstack/react-query";
-import apiClient from '@/app/lib/apiClient';
+import apiClient from '@/app/lib/api';
 import { DashboardResponse } from "@/app/types/api";
+import useAuthStore from "./useAuthHook";
 
 export function useDashboardData() {
+    const { accessToken } = useAuthStore();
+    
     return useQuery<DashboardResponse>({
-        queryKey: ['adminDashboard'],
+        queryKey: ['adminDashboard', accessToken],
         queryFn: async () => {
-            const response = await apiClient.get('/api/Admin/Dashboard');
-            return response.data;
-        }
+            const response = await apiClient.get<DashboardResponse>('/api/Admin/Dashboard',
+                {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`
+                    }
+                }
+            );
+            return response;
+        },
+        enabled: !!accessToken
     });
 }
 

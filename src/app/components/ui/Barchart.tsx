@@ -2,11 +2,9 @@
 
 import { Bar } from "react-chartjs-2"
 import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from "chart.js"
-import { useQuery } from "@tanstack/react-query"
-import apiClient from "@/app/lib/apiClient"
-import { format, startOfWeek, endOfWeek } from 'date-fns'
-import { NumberOfLessonResponse } from "@/app/types/api"
+import { startOfWeek, endOfWeek } from 'date-fns'
 import { NumberOfClassesSkeleton } from "../skeletons/TutorDetailsSkeleton"
+import { useNumberOfLessonsData } from "@/store/useNumberOfLessonsData"
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale);
 
@@ -29,19 +27,8 @@ const BarChart = ({ dateRange }: BarChartProps) => {
   const startDate = dateRange?.startDate || defaultStart
   const endDate = dateRange?.endDate || defaultEnd
 
-  // Format dates (YYYY-MM-DD HH:mm:ss)
-  const formatForApi = (date: Date) => format(date, 'yyyy-MM-dd HH:mm:ss')
-
-  // Fetch data from API
-  const { data, isLoading, error } = useQuery<NumberOfLessonResponse>({
-    queryKey: ['weeklyClasses', startDate, endDate],
-    queryFn: async () => {
-      const response = await apiClient.get(`/api/Admin/numberOfClasses`, {
-        params: { startDate: formatForApi(startDate), endDate: formatForApi(endDate) }
-      })
-      return response.data
-    }
-  })
+  // Fetch data from hook
+  const { data, isLoading, error } = useNumberOfLessonsData(startDate, endDate)
 
   // Handle loading & error states
   if (isLoading) return (<NumberOfClassesSkeleton />)

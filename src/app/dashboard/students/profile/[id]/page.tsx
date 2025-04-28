@@ -8,7 +8,7 @@ import { Input } from '@/app/components/ui/Input';
 //import { StudentProfileResponse } from '@/app/types/api';
 //import { useQuery } from '@tanstack/react-query';
 //import apiClient from '@/app/lib/apiClient';
-import { useParams } from 'next/navigation';
+import { notFound, useParams } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleUser } from '@fortawesome/free-solid-svg-icons';
 import { StudentProfileSkeleton } from '@/app/components/skeletons/ProfileSkeletons';
@@ -21,6 +21,10 @@ export default function StudentProfilePage() {
 
   if (isLoading) return <StudentProfileSkeleton />;
   if (error) return <div>Error loading profile</div>;
+
+  if (!studentProfile) {
+    notFound()
+  }
 
   return (
     <div className="flex flex-col">

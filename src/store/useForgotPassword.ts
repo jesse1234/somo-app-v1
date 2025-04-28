@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import apiClient from '@/app/lib/apiClient';
+import apiClient from '@/app/lib/api';
 import { AxiosError } from 'axios';
 
 interface ApiErrorResponse {

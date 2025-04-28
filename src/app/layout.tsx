@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { Lato } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers/providers";
-import { Toaster } from "react-hot-toast"
+import { Toaster } from "react-hot-toast";
+import { SessionExpiredModal } from "./components/ui/SessionExpiredModal";
 
 const lato = Lato({
   weight: ['400', '700'],
@@ -24,7 +25,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${lato.variable} font-sans bg-white`}>
         <Toaster position="top-right"/>
-        <Providers>{children}</Providers>
+        <Providers>
+          {children}
+          <SessionExpiredModal/>
+        </Providers>
       </body>
     </html>
   );
